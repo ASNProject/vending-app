@@ -9,3 +9,4 @@ Route::get('/user', function (Request $request) {
 
 // Items
 Route::apiResource('/items', \App\Http\Controllers\ItemController::class);
+Route::apiResource('/limits', \App\Http\Controllers\UserItemLimitController::class);
