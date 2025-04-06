@@ -80,9 +80,9 @@ class DeviceManagementController extends Controller
     public function store(Request $request)
     {
         $validator = Validator::make($request->all(), [
-            'device' => 'required|string|unique:devices,device',
+            'device' => 'required|string',
             'items' => 'required|array',
-            'items.*.item_id' => 'required|exists:items,id',
+            'items.*.item_id' => 'required|integer',
             'items.*.limit' => 'required|integer|min:1',
         ]);
     
@@ -91,8 +91,18 @@ class DeviceManagementController extends Controller
         }
     
         $createdItems = [];
+        $duplicates = [];
     
         foreach ($request->items as $data) {
+            $existing = Device::where('device', $request->device)
+                ->where('item_id', $data['item_id'])
+                ->first();
+    
+            if ($existing) {
+                $duplicates[] = $data['item_id'];
+                continue; 
+            }
+    
             $created = Device::create([
                 'device' => $request->device,
                 'item_id' => $data['item_id'],
@@ -110,6 +120,66 @@ class DeviceManagementController extends Controller
             'items' => $createdItems,
         ];
     
+        if (!empty($duplicates)) {
+            return new Resource(false, 'Some items already exist for this device: ' . implode(', ', $duplicates), $response);
+        }
+    
         return new Resource(true, 'Device item limits stored successfully', $response);
+    }
+    /**
+     * show
+     * 
+     * @param mixed $id
+     * @return void
+     */
+    public function show($deviceName)
+    {
+        $devices = Device::where('device', $deviceName)->with('item')->get();
+        if (!$devices) {
+            return new Resource(false, 'Device not found', null);
+        }
+    
+        return new Resource(true, 'Device retrieved successfully', $devices);
+    }
+    /**
+     * update
+     * 
+     * @param mixed $request
+     * @param mixed $id
+     * @return void
+     */
+    public function update(Request $request, $device)
+    {
+        $deviceItem = Device::where('device', $device)
+            ->where('item_id', $request->item_id)
+            ->first();
+    
+        if (!$deviceItem) {
+            return new Resource(false, 'Device item not found', null);
+        }
+    
+        $deviceItem->update($request->only(['limit']));
+    
+        return new Resource(true, 'Device item updated successfully', $deviceItem);
+    }
+    /**
+     * destroy
+     * 
+     * @param mixed $id
+     * @return void
+     */
+    public function destroy($device, $itemId)
+    {
+        $deviceItem = Device::where('device', $device)
+            ->where('item_id', $itemId)
+            ->first();
+    
+        if (!$deviceItem) {
+            return new Resource(false, 'Device item not found', null);
+        }
+    
+        $deviceItem->delete();
+    
+        return new Resource(true, 'Device item deleted successfully', null);
     }
 }

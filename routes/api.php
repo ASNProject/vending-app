@@ -11,3 +11,4 @@ Route::get('/user', function (Request $request) {
 Route::apiResource('/items', \App\Http\Controllers\ItemController::class);
 Route::apiResource('/limits', \App\Http\Controllers\UserItemLimitController::class);
 Route::apiResource('/devices', \App\Http\Controllers\DeviceManagementController::class);
+Route::delete('/devices/{device}/{itemId}', [\App\Http\Controllers\DeviceManagementController::class, 'destroy']);
