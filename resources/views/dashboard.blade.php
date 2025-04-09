@@ -1,63 +1,137 @@
 @extends('layouts.app', ['title' => 'Dashboard'])
- @section('content')
- <body>
-     <main>
-            {{-- NAVBAR --}}
-    <nav class="navbar navbar-expand-lg navbar-light bg-light">
-        <a class="navbar-brand font-weight-bold" style="font-size: 24px" href="#">Vending Dashboard</a>
-        <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
-            <span class="navbar-toggler-icon"></span>
-        </button>
-        
-        <div class="collapse navbar-collapse" id="navbarSupportedContent">
-            <ul class="navbar-nav mr-auto">
-            <li class="nav-item active">
-                <a class="nav-link" href="#">Home <span class="sr-only">(current)</span></a>
-            </li>
-            <li class="nav-item">
-                <a class="nav-link" href="#">Link</a>
-            </li>
-            <li class="nav-item dropdown">
-                <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                Dropdown
-                </a>
-                <div class="dropdown-menu" aria-labelledby="navbarDropdown">
-                <a class="dropdown-item" href="#">Action</a>
-                <a class="dropdown-item" href="#">Another action</a>
-                <div class="dropdown-divider"></div>
-                <a class="dropdown-item" href="#">Something else here</a>
-                </div>
-            </li>
-            <li class="nav-item">
-                <a class="nav-link disabled" href="#">Disabled</a>
-            </li>
-            </ul>
-            <form class="form-inline my-2 my-lg-0" action="{{ route('logout') }}" method="POST"
-                onsubmit="return confirm('Are you sure you want to logout?')">
-                @csrf
-                <button class="btn btn-outline-danger my-2 my-sm-0" type="submit">Logout</button>
-            </form>
 
+@section('content')
+<body>
+    <div class="d-flex">
+        {{-- Sidebar --}}
+        <div class="bg-light sidebar p-3 d-flex flex-column" style="width: 250px; height: 100vh; border-right: 2px solid #ddd;">
+            <h3 class="text-left mb-4">Vending App</h3>
+            <ul class="nav flex-column mb-auto" id="sidebar">
+                <li class="nav-item mb-2">
+                    <a class="nav-link {{ request()->is('home') ? 'active' : '' }}" href="#" data-url="{{ route('dashboard.home') }}">
+                        Home
+                    </a>
+                </li>
+                <li class="nav-item mb-2">
+                    <a class="nav-link {{ request()->is('pendaftaran') ? 'active' : '' }}" href="#" data-url="{{ route('dashboard.pendaftaran') }}">
+                        Pendaftaran
+                    </a>
+                </li>
+                <li class="nav-item mb-2">
+                    <a class="nav-link {{ request()->is('nama-item') ? 'active' : '' }}" href="#" data-url="{{ route('dashboard.nama-item') }}">
+                        Nama Item
+                    </a>
+                </li>
+                <li class="nav-item mb-2">
+                    <a class="nav-link {{ request()->is('atur-item') ? 'active' : '' }}" href="#" data-url="{{ route('dashboard.atur-item') }}">
+                        Atur Item
+                    </a>
+                </li>
+                <li class="nav-item mb-2">
+                    <a class="nav-link {{ request()->is('data-pengguna') ? 'active' : '' }}" href="#" data-url="{{ route('dashboard.data-pengguna') }}">
+                        Data Pengguna
+                    </a>
+                </li>
+                <li class="nav-item mb-2">
+                    <a class="nav-link {{ request()->is('record') ? 'active' : '' }}" href="#" data-url="{{ route('dashboard.record') }}">
+                        Record
+                    </a>
+                </li>
+            </ul>
+
+            {{-- Logout Button --}}
+            <form class="form-inline mt-auto" action="{{ route('logout') }}" method="POST" onsubmit="return confirm('Are you sure you want to logout?')">
+                @csrf
+                <button class="btn btn-outline-danger w-100" type="submit" style="font-weight: 600;">Logout</button>
+            </form>
         </div>
-    </nav>
-    {{-- END NAVBAR --}}
-    {{-- MAIN CODE --}}
-       <div class="m-3 py-1">
-         <div class="p-3 mb-4 bg-light rounded-3">
-           <div class="container-fluid">
-             {{-- @session('success')
-                 <div class="alert alert-success" role="alert"> 
-                   {{ $value }}
-                 </div>
-             @endsession --}}
-     
-             <h1 class="display-5 fw-bold">Hi, {{ auth()->user()->name }}</h1>
-             <p class="col-md-8 fs-4">Welcome to dashboard.<br/>Using a series of utilities, you can create this jumbotron, just like the one in previous versions of Bootstrap. Check out the examples below for how you can remix and restyle it to your liking.</p>
-             <button class="btn btn-primary btn-lg" type="button">Dashboard</button>
-           </div>
-         </div>
-     
-       </div>
-     </main>
- </body>
- @endsection
+        {{-- END Sidebar --}}
+        
+        {{-- Main Content --}}
+        <div id="main-content" class="flex-grow-1 p-3">
+            <!-- Default content for Home will load here -->
+        </div>
+        {{-- END Main Content --}}
+    </div>
+
+    {{-- Add custom styling --}}
+    <style>
+        /* Hover effect for sidebar links */
+        .nav-link {
+            font-size: 16px;
+            font-weight: 600;
+            color: #6c757d; /* Text color gray */
+            transition: color 0.3s ease, background-color 0.3s ease;
+        }
+
+        /* Hover effect for links */
+        .nav-link:hover {
+            color: white;
+            background-color: #ffc107;
+            border-radius: 5px;
+        }
+
+        /* Active link styling */
+        .nav-link.active {
+            color: white;
+            background-color: #ffc107;
+            border-radius: 5px;
+        }
+
+        /* Icon and link styling */
+        .nav-link i {
+            margin-right: 10px;
+        }
+
+        /* Logout button hover effect */
+        .btn-outline-danger:hover {
+            background-color: #dc3545;
+            color: white;
+        }
+    </style>
+
+    {{-- Add JavaScript --}}
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const links = document.querySelectorAll('.nav-link');
+            
+            // Handle Sidebar Link Click
+            links.forEach(link => {
+                link.addEventListener('click', function(e) {
+                    e.preventDefault();
+
+                    // Remove 'active' class from all links
+                    links.forEach(link => link.classList.remove('active'));
+
+                    // Add 'active' class to the clicked link
+                    this.classList.add('active');
+
+                    // Get the URL from data-url attribute
+                    const url = this.getAttribute('data-url');
+
+                    // Use AJAX to fetch the content and update main content
+                    fetch(url)
+                        .then(response => response.text())
+                        .then(html => {
+                            document.getElementById('main-content').innerHTML = html;
+                        })
+                        .catch(error => console.error('Error loading content:', error));
+                });
+            });
+
+            // Load default content for Home on page load
+            const homeLink = document.querySelector('.nav-link[data-url="{{ route('dashboard.home') }}"]');
+            if (homeLink) {
+                homeLink.classList.add('active');
+                const url = homeLink.getAttribute('data-url');
+                fetch(url)
+                    .then(response => response.text())
+                    .then(html => {
+                        document.getElementById('main-content').innerHTML = html;
+                    })
+                    .catch(error => console.error('Error loading default content:', error));
+            }
+        });
+    </script>
+</body>
+@endsection
