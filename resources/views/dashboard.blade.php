@@ -13,8 +13,8 @@
                     </a>
                 </li>
                 <li class="nav-item mb-2">
-                    <a class="nav-link {{ request()->is('pendaftaran') ? 'active' : '' }}" href="#" data-url="{{ route('dashboard.pendaftaran') }}">
-                        Pendaftaran
+                    <a class="nav-link {{ request()->is('userdata') ? 'active' : '' }}" href="#" data-url="{{ route('dashboard.userdata') }}">
+                        userdata
                     </a>
                 </li>
                 <li class="nav-item mb-2">

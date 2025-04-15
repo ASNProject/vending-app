@@ -3,22 +3,29 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
+use App\Models\Device;
+use App\Models\UserItemLimit;
+use App\Models\Item;
+use App\Models\Vending;
 
 class DashboardController extends Controller
 {
-    public function home()
+    public function home(Request $request)
     {
-        return view('dashboard.home');
+        $devices = Device::with('item')->simplePaginate(10);
+        return view('dashboard.home', compact('devices'));
     }
 
-    public function pendaftaran()
+    public function userdata()
     {
-        return view('dashboard.pendaftaran');
+        $userItemLimits = UserItemLimit::simplePaginate(10);
+        return view('dashboard.userdata', compact('userItemLimits'));
     }
 
     public function namaItem()
     {
-        return view('dashboard.nama-item');
+        $items = Item::simplePaginate(10);
+        return view('dashboard.nama-item', compact('items'));
     }
 
     public function aturItem()

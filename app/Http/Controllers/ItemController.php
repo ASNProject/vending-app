@@ -35,14 +35,22 @@ class ItemController extends Controller
         ]);
 
         if ($validator->fails()) {
-            return response()->json($validator->errors(), 422);
+            $errors = $validator->errors();
+            // Cek apakah ada error untuk 'uid'
+            if ($errors->has('uid')) {
+                return redirect()->route('dashboard.nama-item')
+                    ->with('error', 'UID sudah terdaftar!');
+            }
+    
+            return redirect()->route('dashboard.nama-item')
+                ->with('error', 'Terdapat kesalahan dalam pengisian form!');
         }
 
         $item = Item::create([
             'name' => $request->name
         ]);
 
-        return new Resource(true, 'Item created successfully', $item);
+        return redirect()->route('dashboard.nama-item')->with('success', 'Data berhasil di ditambahakan!');
     }
     /**
      * show
@@ -77,14 +85,22 @@ class ItemController extends Controller
         ]);
 
         if ($validator->fails()) {
-            return response()->json($validator->errors(), 422);
+            $errors = $validator->errors();
+            // Cek apakah ada error untuk 'uid'
+            if ($errors->has('uid')) {
+                return redirect()->route('dashboard.nama-item')
+                    ->with('error', 'UID sudah terdaftar!');
+            }
+    
+            return redirect()->route('dashboard.nama-item')
+                ->with('error', 'Terdapat kesalahan dalam pengisian form!');
         }
 
         $item->update([
             'name' => $request->name
         ]);
 
-        return new Resource(true, 'Item updated successfully', $item);
+        return redirect()->route('dashboard.nama-item')->with('success', 'Data berhasil di ditambahakan!');
     }
     /**
      * destroy
@@ -101,6 +117,12 @@ class ItemController extends Controller
 
         $item->delete();
 
-        return new Resource(true, 'Item deleted successfully', null);
+        return redirect()->route('dashboard.nama-item')->with('success', 'Data berhasil dihapus!');
+    }
+
+    public function edit($id)
+    {
+        $item = Item::findOrFail($id);
+        return view('item.edit', compact('item'));
     }
 }

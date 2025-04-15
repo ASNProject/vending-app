@@ -39,7 +39,15 @@ class UserItemLimitController extends Controller
         ]);
 
         if ($validator->fails()) {
-            return response()->json($validator->errors(), 422);
+            $errors = $validator->errors();
+            // Cek apakah ada error untuk 'uid'
+            if ($errors->has('uid')) {
+                return redirect()->route('dashboard.userdata')
+                    ->with('error', 'UID sudah terdaftar!');
+            }
+    
+            return redirect()->route('dashboard.userdata')
+                ->with('error', 'Terdapat kesalahan dalam pengisian form!');
         }
 
         $userItemLimit = UserItemLimit::create([
@@ -49,7 +57,7 @@ class UserItemLimitController extends Controller
             'limit' => $request->limit
         ]);
 
-        return new Resource(true, 'User item limit created successfully', $userItemLimit);
+        return redirect()->route('dashboard.userdata')->with('success', 'Data berhasil di ditambahakan!');
     }
     /**
      * show
@@ -81,7 +89,7 @@ class UserItemLimitController extends Controller
 
         $userItemLimit->update($request->only(['uid', 'name', 'role', 'limit']));
 
-        return new Resource(true, 'User item limit updated successfully', $userItemLimit);
+        return redirect()->route('dashboard.userdata')->with('success', 'Data dari '. $uid .' berhasil di perbarui!');
     }  
     /**
      * destroy
@@ -97,6 +105,13 @@ class UserItemLimitController extends Controller
         }
 
         $userItemLimit->delete();
-        return new Resource(true, 'User item limit deleted successfully', null);
+        return redirect()->route('dashboard.userdata')->with('success', 'Data berhasil di dihapus!');
     }
+
+    public function edit($id)
+    {
+        $userItemLimit = UserItemLimit::findOrFail($id);
+        return view('user-item-limits.edit', compact('userItemLimit'));
+    }
+    
 }
