@@ -8,6 +8,9 @@ use App\Models\Device;
 use App\Models\Vending;
 use App\Http\Resources\Resource;
 use App\Http\Controllers\Controller;
+use Symfony\Component\HttpFoundation\StreamedResponse;
+use App\Exports\VendingsExport;
+use Maatwebsite\Excel\Facades\Excel;
 
 class VendingController extends Controller
 {
@@ -109,4 +112,10 @@ class VendingController extends Controller
             ]
         ]);
     }
+
+    public function exportExcel()
+    {
+        return Excel::download(new VendingsExport, 'records_vending.xlsx');
+    }
+    
 }

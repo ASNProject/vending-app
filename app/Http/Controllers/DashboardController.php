@@ -18,28 +18,26 @@ class DashboardController extends Controller
 
     public function userdata()
     {
-        $userItemLimits = UserItemLimit::simplePaginate(10);
+        $userItemLimits = UserItemLimit::simplePaginate(5);
         return view('dashboard.userdata', compact('userItemLimits'));
     }
 
-    public function namaItem()
+    public function items()
     {
-        $items = Item::simplePaginate(10);
-        return view('dashboard.nama-item', compact('items'));
+        $items = Item::simplePaginate(5);
+        return view('dashboard.item', compact('items'));
     }
 
-    public function aturItem()
+    public function device()
     {
-        return view('dashboard.atur-item');
-    }
-
-    public function dataPengguna()
-    {
-        return view('dashboard.data-pengguna');
+        $devices = Device::with('item')->simplePaginate(5);
+        $allItems = Item::all();
+        return view('dashboard.device', compact('devices', 'allItems'));
     }
 
     public function record()
     {
-        return view('dashboard.record');
+        $records = Vending::with(['user', 'item'])->simplePaginate(10);
+        return view('dashboard.record', compact('records'));
     }
 }

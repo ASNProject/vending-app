@@ -6,24 +6,45 @@
     {{-- Sidebar --}}
     @include('components.sidebar')
     {{-- END Sidebar --}}
-    
+    <hr>
     {{-- Main Content --}}
-    <div class="p-3">
-        <div class="p-3 mb-4 bg-light rounded-3">
-          <div class="container-fluid">
-            {{-- @session('success')
-                <div class="alert alert-success" role="alert"> 
-                  {{ $value }}
-                </div>
-            @endsession --}}
-    
-            <h1 class="display-5 fw-bold">Hi, {{ auth()->user()->name }}</h1>
-            <p class="col-md-8 fs-4">Welcome to userdata.<br/>Using a series of utilities, you can create this jumbotron, just like the one in previous versions of Bootstrap. Check out the examples below for how you can remix and restyle it to your liking.</p>
-            <button class="btn btn-primary btn-lg" type="button">Dashboard</button>
-          </div>
+    <div class="p-3 w-100">
+      <div class="p-3 mb-4 bg-light rounded-3">
+        <div class="container-fluid">
+          <h1 class="display-5 fw-bold mb-5">Record</h1>
+          <a href="{{ route('records.export.excel') }}" class="btn btn-success mb-3">
+            Download CSV
+          </a>
+              {{-- Table to Display Data --}}
+            <table class="table table-striped" style="width: 100%; overflow-x: auto; table-layout: fixed;">
+              <thead>
+                  <tr>
+                      <th scope="col">Device</th>
+                      <th scope="col">Item</th>
+                      <th scope="col">Name</th>
+                      <th scope="col">Role</th>
+                      <th scope="col">Date</th>
+                  </tr>
+              </thead>
+              <tbody>
+                  @foreach($records as $record)
+                      <tr>
+                          <td>{{ $record->device }}</td>
+                          <td>{{ $record->item->name }}</td>
+                          <td>{{ $record->user->name }}</td>
+                          <td>{{ $record->user->role }}</td>
+                          <td>{{ $record->created_at}}</td>
+                      </tr>
+                  @endforeach
+              </tbody>
+            </table>
+
+            <div class="d-flex justify-content-center">
+              {{ $records->links() }}
+            </div>
         </div>
-    
       </div>
+    </div>
   </div>
   {{-- Link to External CSS --}}
   <link rel="stylesheet" href="{{ asset('css/custom-style.css') }}">

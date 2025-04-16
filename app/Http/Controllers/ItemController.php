@@ -38,7 +38,7 @@ class ItemController extends Controller
             $errors = $validator->errors();
             // Cek apakah ada error untuk 'uid'
             if ($errors->has('uid')) {
-                return redirect()->route('dashboard.nama-item')
+                return redirect()->route('dashboard.item')
                     ->with('error', 'UID sudah terdaftar!');
             }
     
@@ -50,7 +50,7 @@ class ItemController extends Controller
             'name' => $request->name
         ]);
 
-        return redirect()->route('dashboard.nama-item')->with('success', 'Data berhasil di ditambahakan!');
+        return redirect()->route('dashboard.item')->with('success', 'Data berhasil di ditambahakan!');
     }
     /**
      * show
@@ -88,11 +88,11 @@ class ItemController extends Controller
             $errors = $validator->errors();
             // Cek apakah ada error untuk 'uid'
             if ($errors->has('uid')) {
-                return redirect()->route('dashboard.nama-item')
+                return redirect()->route('dashboard.item')
                     ->with('error', 'UID sudah terdaftar!');
             }
     
-            return redirect()->route('dashboard.nama-item')
+            return redirect()->route('dashboard.item')
                 ->with('error', 'Terdapat kesalahan dalam pengisian form!');
         }
 
@@ -100,7 +100,7 @@ class ItemController extends Controller
             'name' => $request->name
         ]);
 
-        return redirect()->route('dashboard.nama-item')->with('success', 'Data berhasil di ditambahakan!');
+        return redirect()->route('dashboard.item')->with('success', 'Data berhasil di ditambahakan!');
     }
     /**
      * destroy
@@ -117,7 +117,7 @@ class ItemController extends Controller
 
         $item->delete();
 
-        return redirect()->route('dashboard.nama-item')->with('success', 'Data berhasil dihapus!');
+        return redirect()->route('dashboard.item')->with('success', 'Data berhasil dihapus!');
     }
 
     public function edit($id)

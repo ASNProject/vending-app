@@ -1,5 +1,5 @@
 <div class="bg-light sidebar p-3 d-flex flex-column" style="width: 250px; height: 100vh; border-right: 2px solid #ddd;">
-    <h3 class="text-left mb-4">Vending</h3>
+    <h3 class="text-left mb-4">Vending App</h3>
     <ul class="nav flex-column mb-auto" id="sidebar">
         <li class="nav-item mb-2">
             <a class="nav-link {{ request()->is('home') ? 'active' : '' }}" href="{{ route('dashboard.home') }}">
@@ -12,12 +12,12 @@
             </a>
         </li>
         <li class="nav-item mb-2">
-            <a class="nav-link {{ request()->is('nama-item') ? 'active' : '' }}" href="{{ route('dashboard.nama-item') }}">
+            <a class="nav-link {{ request()->is('items') ? 'active' : '' }}" href="{{ route('dashboard.item') }}">
                 Item
             </a>
         </li>
         <li class="nav-item mb-2">
-            <a class="nav-link {{ request()->is('data-pengguna') ? 'active' : '' }}" href="{{ route('dashboard.data-pengguna') }}">
+            <a class="nav-link {{ request()->is('device') ? 'active' : '' }}" href="{{ route('dashboard.device') }}">
                 Device
             </a>
         </li>

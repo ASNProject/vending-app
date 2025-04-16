@@ -10,6 +10,7 @@ use App\Models\User;
 use Hash;
 use Illuminate\View\View;
 use Illuminate\Http\RedirectResponse;
+use App\Models\Device;
 
 class AuthController extends Controller
 {
@@ -77,7 +78,8 @@ class AuthController extends Controller
     public function dashboard()
     {
         if (Auth::check()) {
-            return view('dashboard');
+            $devices = Device::with('item')->paginate(10);
+            return view('dashboard.home', compact('devices'));
         }
         return redirect('login')->with('error', 'You are not allowed to access');
     }

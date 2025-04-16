@@ -87,7 +87,8 @@ class DeviceManagementController extends Controller
         ]);
     
         if ($validator->fails()) {
-            return response()->json($validator->errors(), 422);
+            return redirect()->route('dashboard.device')
+                ->with('error', 'Terdapat kesalahan dalam pengisian form!');
         }
     
         $createdItems = [];
@@ -121,10 +122,11 @@ class DeviceManagementController extends Controller
         ];
     
         if (!empty($duplicates)) {
-            return new Resource(false, 'Some items already exist for this device: ' . implode(', ', $duplicates), $response);
+            return redirect()->route('dashboard.device')
+            ->with('error', 'Data sudah terdaftar!');
         }
     
-        return new Resource(true, 'Device item limits stored successfully', $response);
+        return redirect()->route('dashboard.device')->with('success', 'Data berhasil ditambahakan!');
     }
     /**
      * show
@@ -160,7 +162,7 @@ class DeviceManagementController extends Controller
     
         $deviceItem->update($request->only(['limit']));
     
-        return new Resource(true, 'Device item updated successfully', $deviceItem);
+        return redirect()->route('dashboard.device')->with('success', 'Data berhasil di perbarui!');
     }
     /**
      * destroy
@@ -168,18 +170,37 @@ class DeviceManagementController extends Controller
      * @param mixed $id
      * @return void
      */
-    public function destroy($device, $itemId)
+    // public function destroy($device, $itemId)
+    // {
+    //     $deviceItem = Device::where('device', $device)
+    //         ->where('item_id', $itemId)
+    //         ->first();
+    
+    //     if (!$deviceItem) {
+    //         return new Resource(false, 'Device item not found', null);
+    //     }
+    
+    //     $deviceItem->delete();
+    
+    //     return redirect()->route('dashboard.device')->with('success', 'Data berhasil dihapus!');
+    // }
+
+    public function destroy($id)
+{
+    $deviceItem = Device::find($id);
+
+    if (!$deviceItem) {
+        return redirect()->route('dashboard.device')->with('success', 'Data tidak ada!');
+    }
+
+    $deviceItem->delete();
+
+    return redirect()->route('dashboard.device')->with('success', 'Data berhasil dihapus!');
+}
+
+    public function edit($id)
     {
-        $deviceItem = Device::where('device', $device)
-            ->where('item_id', $itemId)
-            ->first();
-    
-        if (!$deviceItem) {
-            return new Resource(false, 'Device item not found', null);
-        }
-    
-        $deviceItem->delete();
-    
-        return new Resource(true, 'Device item deleted successfully', null);
+        $userItemLimit = Device::findOrFail($id);
+        return view('device.edit', compact('userItemLimit'));
     }
 }
