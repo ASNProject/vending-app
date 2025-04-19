@@ -128,6 +128,64 @@ class DeviceManagementController extends Controller
     
         return redirect()->route('dashboard.device')->with('success', 'Data berhasil ditambahakan!');
     }
+
+        /**
+     * store
+     * 
+     * @param mixed $request
+     * @return void
+     */
+    public function storeApi(Request $request)
+    {
+        $validator = Validator::make($request->all(), [
+            'device' => 'required|string',
+            'items' => 'required|array',
+            'items.*.item_id' => 'required|integer',
+            'items.*.limit' => 'required|integer|min:1',
+        ]);
+    
+        if ($validator->fails()) {
+            return redirect()->route('dashboard.device')
+                ->with('error', 'Terdapat kesalahan dalam pengisian form!');
+        }
+    
+        $createdItems = [];
+        $duplicates = [];
+    
+        foreach ($request->items as $data) {
+            $existing = Device::where('device', $request->device)
+                ->where('item_id', $data['item_id'])
+                ->first();
+    
+            if ($existing) {
+                $duplicates[] = $data['item_id'];
+                continue; 
+            }
+    
+            $created = Device::create([
+                'device' => $request->device,
+                'item_id' => $data['item_id'],
+                'limit' => $data['limit'],
+            ]);
+    
+            $createdItems[] = [
+                'item' => Item::find($created->item_id),
+                'limit' => $created->limit,
+            ];
+        }
+    
+        $response = [
+            'device' => $request->device,
+            'items' => $createdItems,
+        ];
+    
+        if (!empty($duplicates)) {
+            return redirect()->route('dashboard.device')
+            ->with('error', 'Data sudah terdaftar!');
+        }
+    
+        return new Resource(true, 'Device item limits created successfully', $response);
+    }
     /**
      * show
      * 

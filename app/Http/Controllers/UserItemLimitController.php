@@ -59,15 +59,45 @@ class UserItemLimitController extends Controller
 
         return redirect()->route('dashboard.userdata')->with('success', 'Data berhasil di ditambahakan!');
     }
+    public function storeApi(Request $request) 
+    {
+        $validator = Validator::make($request->all(), [
+            'uid'=> 'required|unique:user_item_limits,uid',
+            'name' => 'required|unique:user_item_limits,name',
+            'role' => 'required',
+            'limit' => 'required',
+        ]);
+
+        if ($validator->fails()) {
+            $errors = $validator->errors();
+            // Cek apakah ada error untuk 'uid'
+            if ($errors->has('uid')) {
+                return redirect()->route('dashboard.userdata')
+                    ->with('error', 'UID sudah terdaftar!');
+            }
+    
+            return redirect()->route('dashboard.userdata')
+                ->with('error', 'Terdapat kesalahan dalam pengisian form!');
+        }
+
+        $userItemLimit = UserItemLimit::create([
+            'uid' => $request->uid,
+            'name' => $request->name,
+            'role' => $request->role,
+            'limit' => $request->limit
+        ]);
+
+        return new Resource(true, 'User item limit created successfully', $userItemLimit);
+    }
     /**
      * show
      * 
      * @param mixed $id
      * @return void
      */
-    public function show($id)
+    public function show($uid)
     {
-        $userItemLimit = UserItemLimit::find($id);
+        $userItemLimit = UserItemLimit::where('uid', $uid)->first();
         if (!$userItemLimit) {
             return new Resource(false, 'User item limit not found', null);
         }

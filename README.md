@@ -28,6 +28,10 @@ composer update
 ```
 php artisan serve
 ```
+- Development
+```
+php artisan serve --host=0.0.0.0 --port=8000
+```
 
 #### Route
 ##### ITEMS

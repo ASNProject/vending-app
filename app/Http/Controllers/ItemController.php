@@ -52,6 +52,31 @@ class ItemController extends Controller
 
         return redirect()->route('dashboard.item')->with('success', 'Data berhasil di ditambahakan!');
     }
+
+    public function storeApi(Request $request)
+    {
+        $validator = Validator::make($request->all(), [
+            'name' => 'required|unique:items,name',
+        ]);
+
+        if ($validator->fails()) {
+            $errors = $validator->errors();
+            // Cek apakah ada error untuk 'uid'
+            if ($errors->has('uid')) {
+                return redirect()->route('dashboard.item')
+                    ->with('error', 'UID sudah terdaftar!');
+            }
+    
+            return redirect()->route('dashboard.nama-item')
+                ->with('error', 'Terdapat kesalahan dalam pengisian form!');
+        }
+
+        $item = Item::create([
+            'name' => $request->name
+        ]);
+
+        return new Resource(true, 'Item created successfully', $item);
+    }
     /**
      * show
      * 
